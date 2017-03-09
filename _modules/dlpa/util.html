@@ -1,0 +1,148 @@
+ <!DOCTYPE html> <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]--> <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]--> <head> <meta charset="utf-8"> <meta name="viewport" content="width=device-width,initial-scale=1"> <title>dlpa.util &mdash; Distributed Laplace Perturbation Algorithm 0.3.0 documentation</title> <link rel="search" type="application/opensearchdescription+xml" title="Search within Distributed Laplace Perturbation Algorithm 0.3.0 documentation" href="../../_static/opensearch.xml"> <link rel="stylesheet" href="../../_static/css/theme.css"> <link rel="index" title="Index" href="../../genindex.html"> <link rel="search" title="Search" href="../../search.html"> <link rel="top" title="Distributed Laplace Perturbation Algorithm 0.3.0 documentation" href="../../index.html"> <link rel="up" title="Module code" href="../index.html"> <meta name="title" content="dlpa.util &mdash; Distributed Laplace Perturbation Algorithm 0.3.0 documentation"> <meta name="description" content="dlpa.util"> <meta property="og:type" content="article"> <meta property="og:title" content="dlpa.util &mdash; Distributed Laplace Perturbation Algorithm 0.3.0 documentation"> <meta property="og:image" content="https://jkawamoto.github.io/psi-dlpa/_static/image.png"> <meta property="og:url" content="https://jkawamoto.github.io/psi-dlpa/_modules/dlpa/util.html"> <meta property="og:site_name" content="Distributed Laplace Perturbation Algorithm 0.3.0 documentation"> <meta property="og:description" content="dlpa.util"> <meta name="twitter:site" content="@junkawamoto"> <meta name="twitter:card" content="dlpa.util"> <script src="https://use.fontawesome.com/f179dac0e7.js" async></script> <script src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <script>(adsbygoogle=window.adsbygoogle||[]).push({google_ad_client:"ca-pub-4734862314145555",enable_page_level_ads:!0})</script> <script>!function(e,t,a,n,c,s,o){e.GoogleAnalyticsObject=c,e[c]=e[c]||function(){(e[c].q=e[c].q||[]).push(arguments)},e[c].l=1*new Date,s=t.createElement(a),o=t.getElementsByTagName(a)[0],s.async=1,s.src="https://www.google-analytics.com/analytics.js",o.parentNode.insertBefore(s,o)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-82315630-2","auto"),ga("send","pageview")</script> <script src="../../_static/js/modernizr.min.js"></script> </head> <body class="wy-body-for-nav" role="document"> <div class="wy-grid-for-nav"> <nav data-toggle="wy-nav-shift" class="wy-nav-side"> <div class="wy-side-scroll"> <div class="wy-side-nav-search"> <a href="../../index.html" class="icon icon-home"> Distributed Laplace Perturbation Algorithm </a> <div class="version"> 0.3 </div> <div role="search"> <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get"> <input type="text" name="q" placeholder="Search docs"> <input type="hidden" name="check_keywords" value="yes"> <input type="hidden" name="area" value="default"> </form> </div> </div> <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation"> <div class="local-toc"></div> <hr> <div style="padding:0"> <div style="width:300px;margin:auto"> <ins class="adsbygoogle" style="display:inline-block;width:300px;height:600px" data-ad-client="ca-pub-4734862314145555" data-ad-slot="6934003829"></ins> <script>(adsbygoogle=window.adsbygoogle||[]).push({})</script> </div> </div> </div> </div> </nav> <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"> <nav class="wy-nav-top" role="navigation" aria-label="top navigation"> <i data-toggle="wy-nav-top" class="fa fa-bars"></i> <a href="../../index.html">Distributed Laplace Perturbation Algorithm</a> </nav> <div class="wy-nav-content"> <div class="rst-content"> <div role="navigation" aria-label="breadcrumbs navigation"> <ul class="wy-breadcrumbs"> <li><a href="../../index.html">Docs</a> &raquo;</li> <li><a href="../index.html">Module code</a> &raquo;</li> <li>dlpa.util</li> <li class="wy-breadcrumbs-aside"> </li> </ul> <hr> </div> <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article"> <div itemprop="articleBody"> <h1>Source code for dlpa.util</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># util.py</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2017 Junpei Kawamoto</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="sd">&quot;&quot;&quot;Provides helper functions for the DLPA service.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># pylint: disable=invalid-name</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+
+<div class="viewcode-block" id="gcd"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.util.gcd">[docs]</a><span class="k">def</span> <span class="nf">gcd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the G.C.D.</span>
+
+<span class="sd">    This function implements the Euclidian algorithm</span>
+<span class="sd">    to find G.C.D. of two numbers</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">while</span> <span class="n">y</span><span class="p">:</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">%</span> <span class="n">y</span>
+    <span class="k">return</span> <span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="lcm"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.util.lcm">[docs]</a><span class="k">def</span> <span class="nf">lcm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the L.C.M.</span>
+
+<span class="sd">    This function takes two</span>
+<span class="sd">    integers and returns the L.C.M.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span> <span class="o">//</span> <span class="n">gcd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="phi"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.util.phi">[docs]</a><span class="k">def</span> <span class="nf">phi</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Euler&#39;s totient function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">amount</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">gcd</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">amount</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">amount</span></div>
+
+
+<div class="viewcode-block" id="has_inverse"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.util.has_inverse">[docs]</a><span class="k">def</span> <span class="nf">has_inverse</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return True if the given v has an inverse in mod m.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># print(v, invert(v, m), m)</span>
+        <span class="k">return</span> <span class="n">invert</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">m</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="random_m"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.util.random_m">[docs]</a><span class="k">def</span> <span class="nf">random_m</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Random value from Zm*.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">has_inverse</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">r</span></div>
+
+<span class="c1">#</span>
+<span class="c1"># The following functions are made by</span>
+<span class="c1">#   Data61 | CSIRO &lt;brian.thorne@data61.csiro.au&gt;,</span>
+<span class="c1"># and released under the GPLv3.</span>
+<span class="c1"># You can find the original source code in</span>
+<span class="c1"># https://github.com/n1analytics/python-paillier/blob/master/phe/util.py</span>
+<span class="c1">#</span>
+<span class="c1"># pylint: disable=no-member</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">gmpy2</span>
+    <span class="n">HAVE_GMP</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">HAVE_GMP</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">Crypto.Util</span> <span class="k">import</span> <span class="n">number</span>
+    <span class="n">HAVE_CRYPTO</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">HAVE_CRYPTO</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1"># GMP&#39;s powmod has greater overhead than Python&#39;s pow, but is faster.</span>
+<span class="c1"># From a quick experiment on our machine, this seems to be the break even:</span>
+<span class="n">_USE_MOD_FROM_GMP_SIZE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mi">8</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="powmod"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.util.powmod">[docs]</a><span class="k">def</span> <span class="nf">powmod</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Uses GMP, if available, to do a^b mod c where a, b, c</span>
+<span class="sd">    are integers.</span>
+<span class="sd">    :return int: (a ** b) % c</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">HAVE_GMP</span> <span class="ow">or</span> <span class="nb">max</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">_USE_MOD_FROM_GMP_SIZE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">pow</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">gmpy2</span><span class="o">.</span><span class="n">powmod</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="invert"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.util.invert">[docs]</a><span class="k">def</span> <span class="nf">invert</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The multiplicitive inverse of a in the integers modulo b.</span>
+<span class="sd">    :return int: x, where a * x == 1 mod b</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">HAVE_GMP</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">gmpy2</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># http://code.activestate.com/recipes/576737-inverse-modulo-p/</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">d</span> <span class="o">*</span> <span class="n">a</span><span class="p">)</span> <span class="o">%</span> <span class="n">b</span>
+            <span class="k">if</span> <span class="n">r</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> has no inverse mod </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">d</span>  <span class="c1"># pylint: disable=undefined-loop-variable</span></div>
+
+
+<div class="viewcode-block" id="getprimeover"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.util.getprimeover">[docs]</a><span class="k">def</span> <span class="nf">getprimeover</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return a random N-bit prime number using the System&#39;s best</span>
+<span class="sd">    Cryptographic random source.</span>
+<span class="sd">    Use GMP if available, otherwise fallback to PyCrypto</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">HAVE_GMP</span><span class="p">:</span>
+        <span class="n">randfunc</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">SystemRandom</span><span class="p">()</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">gmpy2</span><span class="o">.</span><span class="n">mpz</span><span class="p">(</span><span class="n">randfunc</span><span class="o">.</span><span class="n">getrandbits</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">gmpy2</span><span class="o">.</span><span class="n">bit_set</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">gmpy2</span><span class="o">.</span><span class="n">next_prime</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">HAVE_CRYPTO</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">number</span><span class="o">.</span><span class="n">getPrime</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;No pure python implementation sorry&quot;</span><span class="p">)</span></div>
+</pre></div> </div> <div class="articleComments"> </div> </div> <footer> <hr> <div role="contentinfo"> <p> &copy; Copyright 2017, Junpei Kawamoto. </p> </div> Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. <p> </p><div class="addthis_inline_follow_toolbox"></div> <p></p> <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4734862314145555" data-ad-slot="6934003829" data-ad-format="auto"></ins> <script>(adsbygoogle=window.adsbygoogle||[]).push({})</script> </footer> </div> </div> </section> </div> <script>var DOCUMENTATION_OPTIONS={URL_ROOT:"../../",VERSION:"0.3.0",COLLAPSE_INDEX:!1,FILE_SUFFIX:".html",HAS_SOURCE:!0,SOURCELINK_SUFFIX:".txt"}</script> <script src="../../_static/jquery.js"></script> <script src="../../_static/underscore.js"></script> <script src="../../_static/doctools.js"></script> <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> <script src="../../_static/js/theme.js"></script> <script>jQuery(function(){SphinxRtdTheme.StickyNav.enable()})</script> <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-57f529147128b1fb"></script> </body> </html>

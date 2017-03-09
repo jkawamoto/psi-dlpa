@@ -1,0 +1,217 @@
+ <!DOCTYPE html> <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]--> <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]--> <head> <meta charset="utf-8"> <meta name="viewport" content="width=device-width,initial-scale=1"> <title>dlpa.client &mdash; Distributed Laplace Perturbation Algorithm 0.3.0 documentation</title> <link rel="search" type="application/opensearchdescription+xml" title="Search within Distributed Laplace Perturbation Algorithm 0.3.0 documentation" href="../../_static/opensearch.xml"> <link rel="stylesheet" href="../../_static/css/theme.css"> <link rel="index" title="Index" href="../../genindex.html"> <link rel="search" title="Search" href="../../search.html"> <link rel="top" title="Distributed Laplace Perturbation Algorithm 0.3.0 documentation" href="../../index.html"> <link rel="up" title="Module code" href="../index.html"> <meta name="title" content="dlpa.client &mdash; Distributed Laplace Perturbation Algorithm 0.3.0 documentation"> <meta name="description" content="dlpa.client"> <meta property="og:type" content="article"> <meta property="og:title" content="dlpa.client &mdash; Distributed Laplace Perturbation Algorithm 0.3.0 documentation"> <meta property="og:image" content="https://jkawamoto.github.io/psi-dlpa/_static/image.png"> <meta property="og:url" content="https://jkawamoto.github.io/psi-dlpa/_modules/dlpa/client.html"> <meta property="og:site_name" content="Distributed Laplace Perturbation Algorithm 0.3.0 documentation"> <meta property="og:description" content="dlpa.client"> <meta name="twitter:site" content="@junkawamoto"> <meta name="twitter:card" content="dlpa.client"> <script src="https://use.fontawesome.com/f179dac0e7.js" async></script> <script src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <script>(adsbygoogle=window.adsbygoogle||[]).push({google_ad_client:"ca-pub-4734862314145555",enable_page_level_ads:!0})</script> <script>!function(e,t,a,n,c,s,o){e.GoogleAnalyticsObject=c,e[c]=e[c]||function(){(e[c].q=e[c].q||[]).push(arguments)},e[c].l=1*new Date,s=t.createElement(a),o=t.getElementsByTagName(a)[0],s.async=1,s.src="https://www.google-analytics.com/analytics.js",o.parentNode.insertBefore(s,o)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-82315630-2","auto"),ga("send","pageview")</script> <script src="../../_static/js/modernizr.min.js"></script> </head> <body class="wy-body-for-nav" role="document"> <div class="wy-grid-for-nav"> <nav data-toggle="wy-nav-shift" class="wy-nav-side"> <div class="wy-side-scroll"> <div class="wy-side-nav-search"> <a href="../../index.html" class="icon icon-home"> Distributed Laplace Perturbation Algorithm </a> <div class="version"> 0.3 </div> <div role="search"> <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get"> <input type="text" name="q" placeholder="Search docs"> <input type="hidden" name="check_keywords" value="yes"> <input type="hidden" name="area" value="default"> </form> </div> </div> <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation"> <div class="local-toc"></div> <hr> <div style="padding:0"> <div style="width:300px;margin:auto"> <ins class="adsbygoogle" style="display:inline-block;width:300px;height:600px" data-ad-client="ca-pub-4734862314145555" data-ad-slot="6934003829"></ins> <script>(adsbygoogle=window.adsbygoogle||[]).push({})</script> </div> </div> </div> </div> </nav> <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"> <nav class="wy-nav-top" role="navigation" aria-label="top navigation"> <i data-toggle="wy-nav-top" class="fa fa-bars"></i> <a href="../../index.html">Distributed Laplace Perturbation Algorithm</a> </nav> <div class="wy-nav-content"> <div class="rst-content"> <div role="navigation" aria-label="breadcrumbs navigation"> <ul class="wy-breadcrumbs"> <li><a href="../../index.html">Docs</a> &raquo;</li> <li><a href="../index.html">Module code</a> &raquo;</li> <li>dlpa.client</li> <li class="wy-breadcrumbs-aside"> </li> </ul> <hr> </div> <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article"> <div itemprop="articleBody"> <h1>Source code for dlpa.client</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># client.py</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2017 Junpei Kawamoto</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c1">#</span>
+<span class="sd">&quot;&quot;&quot;Client of the distributed Laplace Perturbation Algorithm (DLPA) service.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># pylint: disable=invalid-name,import-error,too-many-arguments</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">calendar</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="kn">import</span> <span class="nn">grpc</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">dlpa.key</span> <span class="k">import</span> <span class="n">PublicKey</span><span class="p">,</span> <span class="n">ClientKey</span>
+<span class="kn">from</span> <span class="nn">dlpa</span> <span class="k">import</span> <span class="n">dlpa_pb2</span>
+<span class="kn">from</span> <span class="nn">dlpa</span> <span class="k">import</span> <span class="n">dlpa_pb2_grpc</span>
+
+
+<div class="viewcode-block" id="DLPAClient"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.client.DLPAClient">[docs]</a><span class="k">class</span> <span class="nc">DLPAClient</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;DLPAClient provides methods the DLPA service defines.</span>
+
+<span class="sd">    See `dlpa.proto` for more information about DLPA service.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      host: Address of a DLPA server to connect.</span>
+<span class="sd">      port: Port number of the DLPA server to connect.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">50051</span><span class="p">):</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">insecure_channel</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="si">{host}</span><span class="s2">:</span><span class="si">{port}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stub</span> <span class="o">=</span> <span class="n">dlpa_pb2_grpc</span><span class="o">.</span><span class="n">DLPAStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DLPAClient.get_key"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.client.DLPAClient.get_key">[docs]</a>    <span class="k">def</span> <span class="nf">get_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Request a client key associated with a given client id.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">          client_id: Given ID of this client.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">          a client key object.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">          RuntimeError: when the GetKey protocol ends with errors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">GetKey</span><span class="p">(</span><span class="n">dlpa_pb2</span><span class="o">.</span><span class="n">GetKeyRequest</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">client_id</span><span class="p">))</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Cannot get keys.&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pk</span> <span class="o">=</span> <span class="n">PublicKey</span><span class="p">(</span>
+                <span class="n">m</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">public_key</span><span class="o">.</span><span class="n">m</span><span class="p">),</span>
+                <span class="n">g</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">public_key</span><span class="o">.</span><span class="n">g</span><span class="p">),</span>
+                <span class="n">glambda</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">public_key</span><span class="o">.</span><span class="n">glambda</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">ck</span> <span class="o">=</span> <span class="n">ClientKey</span><span class="p">(</span>
+                <span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">,</span> <span class="n">Lambda_u</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">lambda_u</span><span class="p">),</span> <span class="n">a</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">a</span><span class="p">),</span> <span class="n">b</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">b</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">ck</span></div>
+
+<div class="viewcode-block" id="DLPAClient.encrypt_sum"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.client.DLPAClient.encrypt_sum">[docs]</a>    <span class="k">def</span> <span class="nf">encrypt_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ck</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">rand</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run Encrypt-Sum protocol to send a given value.</span>
+
+<span class="sd">        This method returns a time slot with which the given value is associated.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">          ck: Client key.</span>
+<span class="sd">          client_id: Client ID.</span>
+<span class="sd">          value: Scalar or vector to be sent to the server by Encrypt-Sum</span>
+<span class="sd">            protocol.</span>
+<span class="sd">          rand: Use specific values as random values used in the protocol.</span>
+<span class="sd">            If set None, by default, use actual random values.</span>
+<span class="sd">          target: If given, store the value with a specific name in the server.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">          Time slot number attached to the given value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ciphertext</span><span class="p">,</span> <span class="n">transform</span> <span class="o">=</span> <span class="n">ck</span><span class="o">.</span><span class="n">encrypt_sum</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">rand</span><span class="p">)</span>
+        <span class="n">unix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+        <span class="c1"># Send the encrypted value and receive an aggregated ciphertext.</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">PutEncryptSum</span><span class="p">(</span><span class="n">dlpa_pb2</span><span class="o">.</span><span class="n">Ciphertext</span><span class="p">(</span>
+            <span class="n">time</span><span class="o">=</span><span class="n">unix</span><span class="p">,</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">client_id</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">ciphertext</span><span class="p">],</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">))</span>
+
+        <span class="c1"># Compute the decryption share and send it.</span>
+        <span class="n">share</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">res</span><span class="o">.</span><span class="n">value</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">PutEncryptSumShare</span><span class="p">(</span><span class="n">dlpa_pb2</span><span class="o">.</span><span class="n">DecryptionShare</span><span class="p">(</span>
+            <span class="n">slot</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">client_id</span><span class="p">,</span>
+            <span class="n">share</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">share</span><span class="p">],</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">time</span></div>
+
+<div class="viewcode-block" id="DLPAClient.encrypt_sum_squared"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.client.DLPAClient.encrypt_sum_squared">[docs]</a>    <span class="k">def</span> <span class="nf">encrypt_sum_squared</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ck</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">rand</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run Encrypt-Sum-Squared protocol to send a given value.</span>
+
+<span class="sd">        This method returns a time slot with which the given value is associated.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">          ck: Client key.</span>
+<span class="sd">          client_id: Client ID.</span>
+<span class="sd">          value: Scalar or vector to be sent to the server by</span>
+<span class="sd">            Encrypt-Sum-Squared protocol.</span>
+<span class="sd">          rand: Use specific values as random values used in the protocol.</span>
+<span class="sd">          target: If given store the value with a specific name in the server.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">          Time slot number attached to the given value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ciphertext</span><span class="p">,</span> <span class="n">transform</span> <span class="o">=</span> <span class="n">ck</span><span class="o">.</span><span class="n">encrypt_sum_squared</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">rand</span><span class="p">)</span>
+        <span class="n">unix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+        <span class="c1"># Send the encrypted value and receive an aggregated ciphertext.</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">PutEncryptSumSquared</span><span class="p">(</span><span class="n">dlpa_pb2</span><span class="o">.</span><span class="n">Ciphertext</span><span class="p">(</span>
+            <span class="n">time</span><span class="o">=</span><span class="n">unix</span><span class="p">,</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">client_id</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">ciphertext</span><span class="p">],</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">))</span>
+
+        <span class="c1"># Compute the decryption share and send it.</span>
+        <span class="n">share</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">res</span><span class="o">.</span><span class="n">value</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">PutEncryptSumSquaredShare</span><span class="p">(</span><span class="n">dlpa_pb2</span><span class="o">.</span><span class="n">DecryptionShare</span><span class="p">(</span>
+            <span class="n">slot</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">client_id</span><span class="p">,</span>
+            <span class="n">share</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">share</span><span class="p">],</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">time</span></div>
+
+<div class="viewcode-block" id="DLPAClient.encrypt_noisy_sum"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.client.DLPAClient.encrypt_noisy_sum">[docs]</a>    <span class="k">def</span> <span class="nf">encrypt_noisy_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ck</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">rand</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run Encrypt-Noisy-Sum protocol.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">          ck: Client key.</span>
+<span class="sd">          client_id: Client ID.</span>
+<span class="sd">          value: Scalar or vector to be sent to the server by Encrypt-Sum</span>
+<span class="sd">            protocol.</span>
+<span class="sd">          epsilon: Parameter to generate Laplace noises.</span>
+<span class="sd">          rand: Use specific values as random values used in the protocol.</span>
+<span class="sd">            If set None, by default, use actual random values.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">          Time slot number attached to the given value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">y</span><span class="p">,</span> <span class="n">y_t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">ck</span><span class="o">.</span><span class="n">encrypt_noisy_sum</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="n">rand</span><span class="p">)</span>
+        <span class="n">unix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+        <span class="n">req</span> <span class="o">=</span> <span class="n">dlpa_pb2</span><span class="o">.</span><span class="n">EncryptNoisySumCiphertexts</span><span class="p">(</span>
+            <span class="n">time</span><span class="o">=</span><span class="n">unix</span><span class="p">,</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">client_id</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">dlpa_pb2</span><span class="o">.</span><span class="n">CiphertextVector</span><span class="p">(</span>
+                <span class="n">c1</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                <span class="n">c2</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                <span class="n">c3</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span>
+                <span class="n">c4</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">y</span><span class="p">[</span><span class="mi">3</span><span class="p">]]))</span>
+
+        <span class="n">aggregation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">PutEncryptNoisySum</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+        <span class="n">req2</span> <span class="o">=</span> <span class="n">dlpa_pb2</span><span class="o">.</span><span class="n">EncryptNoisySumCiphertexts</span><span class="p">(</span>
+            <span class="n">time</span><span class="o">=</span><span class="n">aggregation</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">client_id</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">dlpa_pb2</span><span class="o">.</span><span class="n">CiphertextVector</span><span class="p">(</span>
+                <span class="n">c1</span><span class="o">=</span><span class="p">[</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">y_t</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">aggregation</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">c1</span><span class="p">]))</span>
+                <span class="p">],</span>
+                <span class="n">c2</span><span class="o">=</span><span class="p">[</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">y_t</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">aggregation</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">c2</span><span class="p">]))</span>
+                <span class="p">],</span>
+                <span class="n">c3</span><span class="o">=</span><span class="p">[</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">y_t</span><span class="p">[</span><span class="mi">2</span><span class="p">](</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">aggregation</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">c3</span><span class="p">]))</span>
+                <span class="p">],</span>
+                <span class="n">c4</span><span class="o">=</span><span class="p">[</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">y_t</span><span class="p">[</span><span class="mi">3</span><span class="p">](</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">aggregation</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">c4</span><span class="p">]))</span>
+                <span class="p">],</span>
+                <span class="n">c5</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+            <span class="p">))</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">PutEncryptNoisySumShare</span><span class="p">(</span><span class="n">req2</span><span class="p">)</span>
+        <span class="n">share</span> <span class="o">=</span> <span class="n">t</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">res</span><span class="o">.</span><span class="n">value</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">PutEncryptNoisySumLastShare</span><span class="p">(</span><span class="n">dlpa_pb2</span><span class="o">.</span><span class="n">DecryptionShare</span><span class="p">(</span>
+            <span class="n">slot</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">client_id</span><span class="p">,</span>
+            <span class="n">share</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">share</span><span class="p">]))</span>
+
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">time</span></div>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="DLPAClient.now"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.client.DLPAClient.now">[docs]</a>    <span class="k">def</span> <span class="nf">now</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Returns a UNIX time of now.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">(</span><span class="n">now</span><span class="o">.</span><span class="n">utctimetuple</span><span class="p">())</span></div></div>
+</pre></div> </div> <div class="articleComments"> </div> </div> <footer> <hr> <div role="contentinfo"> <p> &copy; Copyright 2017, Junpei Kawamoto. </p> </div> Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. <p> </p><div class="addthis_inline_follow_toolbox"></div> <p></p> <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4734862314145555" data-ad-slot="6934003829" data-ad-format="auto"></ins> <script>(adsbygoogle=window.adsbygoogle||[]).push({})</script> </footer> </div> </div> </section> </div> <script>var DOCUMENTATION_OPTIONS={URL_ROOT:"../../",VERSION:"0.3.0",COLLAPSE_INDEX:!1,FILE_SUFFIX:".html",HAS_SOURCE:!0,SOURCELINK_SUFFIX:".txt"}</script> <script src="../../_static/jquery.js"></script> <script src="../../_static/underscore.js"></script> <script src="../../_static/doctools.js"></script> <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> <script src="../../_static/js/theme.js"></script> <script>jQuery(function(){SphinxRtdTheme.StickyNav.enable()})</script> <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-57f529147128b1fb"></script> </body> </html>

@@ -1,0 +1,341 @@
+ <!DOCTYPE html> <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]--> <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]--> <head> <meta charset="utf-8"> <meta name="viewport" content="width=device-width,initial-scale=1"> <title>dlpa.key &mdash; Distributed Laplace Perturbation Algorithm 0.3.0 documentation</title> <link rel="search" type="application/opensearchdescription+xml" title="Search within Distributed Laplace Perturbation Algorithm 0.3.0 documentation" href="../../_static/opensearch.xml"> <link rel="stylesheet" href="../../_static/css/theme.css"> <link rel="index" title="Index" href="../../genindex.html"> <link rel="search" title="Search" href="../../search.html"> <link rel="top" title="Distributed Laplace Perturbation Algorithm 0.3.0 documentation" href="../../index.html"> <link rel="up" title="Module code" href="../index.html"> <meta name="title" content="dlpa.key &mdash; Distributed Laplace Perturbation Algorithm 0.3.0 documentation"> <meta name="description" content="dlpa.key"> <meta property="og:type" content="article"> <meta property="og:title" content="dlpa.key &mdash; Distributed Laplace Perturbation Algorithm 0.3.0 documentation"> <meta property="og:image" content="https://jkawamoto.github.io/psi-dlpa/_static/image.png"> <meta property="og:url" content="https://jkawamoto.github.io/psi-dlpa/_modules/dlpa/key.html"> <meta property="og:site_name" content="Distributed Laplace Perturbation Algorithm 0.3.0 documentation"> <meta property="og:description" content="dlpa.key"> <meta name="twitter:site" content="@junkawamoto"> <meta name="twitter:card" content="dlpa.key"> <script src="https://use.fontawesome.com/f179dac0e7.js" async></script> <script src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <script>(adsbygoogle=window.adsbygoogle||[]).push({google_ad_client:"ca-pub-4734862314145555",enable_page_level_ads:!0})</script> <script>!function(e,t,a,n,c,s,o){e.GoogleAnalyticsObject=c,e[c]=e[c]||function(){(e[c].q=e[c].q||[]).push(arguments)},e[c].l=1*new Date,s=t.createElement(a),o=t.getElementsByTagName(a)[0],s.async=1,s.src="https://www.google-analytics.com/analytics.js",o.parentNode.insertBefore(s,o)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-82315630-2","auto"),ga("send","pageview")</script> <script src="../../_static/js/modernizr.min.js"></script> </head> <body class="wy-body-for-nav" role="document"> <div class="wy-grid-for-nav"> <nav data-toggle="wy-nav-shift" class="wy-nav-side"> <div class="wy-side-scroll"> <div class="wy-side-nav-search"> <a href="../../index.html" class="icon icon-home"> Distributed Laplace Perturbation Algorithm </a> <div class="version"> 0.3 </div> <div role="search"> <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get"> <input type="text" name="q" placeholder="Search docs"> <input type="hidden" name="check_keywords" value="yes"> <input type="hidden" name="area" value="default"> </form> </div> </div> <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation"> <div class="local-toc"></div> <hr> <div style="padding:0"> <div style="width:300px;margin:auto"> <ins class="adsbygoogle" style="display:inline-block;width:300px;height:600px" data-ad-client="ca-pub-4734862314145555" data-ad-slot="6934003829"></ins> <script>(adsbygoogle=window.adsbygoogle||[]).push({})</script> </div> </div> </div> </div> </nav> <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"> <nav class="wy-nav-top" role="navigation" aria-label="top navigation"> <i data-toggle="wy-nav-top" class="fa fa-bars"></i> <a href="../../index.html">Distributed Laplace Perturbation Algorithm</a> </nav> <div class="wy-nav-content"> <div class="rst-content"> <div role="navigation" aria-label="breadcrumbs navigation"> <ul class="wy-breadcrumbs"> <li><a href="../../index.html">Docs</a> &raquo;</li> <li><a href="../index.html">Module code</a> &raquo;</li> <li>dlpa.key</li> <li class="wy-breadcrumbs-aside"> </li> </ul> <hr> </div> <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article"> <div itemprop="articleBody"> <h1>Source code for dlpa.key</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># key.py</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2017 Junpei Kawamoto</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c1">#</span>
+<span class="sd">&quot;&quot;&quot;Public/private keys and encryption/decryption methods for the DLPA service.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># pylint: disable=invalid-name,import-error</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">reduce</span>  <span class="c1"># pylint: disable=redefined-builtin</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">dlpa.util</span> <span class="k">import</span> <span class="n">random_m</span><span class="p">,</span> <span class="n">lcm</span><span class="p">,</span> <span class="n">gcd</span><span class="p">,</span> <span class="n">invert</span><span class="p">,</span> <span class="n">powmod</span><span class="p">,</span> <span class="n">getprimeover</span>
+
+
+<div class="viewcode-block" id="PublicKey"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.key.PublicKey">[docs]</a><span class="k">class</span> <span class="nc">PublicKey</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint:disable=too-few-public-methods</span>
+    <span class="sd">&quot;&quot;&quot;Public key of the DLPA service.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      m: Public parameter; :math:`m = pq` where :math:`p` and :math:`q` are</span>
+<span class="sd">        secret primes.</span>
+<span class="sd">      g: Representative element of group G.</span>
+<span class="sd">      glambda: :math:`g^{\\lambda}`,</span>
+<span class="sd">        where :math:`\\lambda = \\beta {\\rm lcm}(p-1,q-1)` for a random</span>
+<span class="sd">        :math:`\\beta`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">glambda</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">m</span> <span class="o">=</span> <span class="n">m</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">glambda</span> <span class="o">=</span> <span class="n">glambda</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">m2</span> <span class="o">=</span> <span class="n">m</span><span class="o">**</span><span class="mi">2</span>
+
+<div class="viewcode-block" id="PublicKey.encrypt"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.key.PublicKey.encrypt">[docs]</a>    <span class="k">def</span> <span class="nf">encrypt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Encrypt a given number v.</span>
+
+<span class="sd">        The ciphertext of v is defined:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            Enc(v) = g^{v} r^{m} \\mod m^{2}</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">          v: scalar or vector to be encrypted.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">          vector of ciphertexts; even if the input is a scalar, one dimension</span>
+<span class="sd">          vector is returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="n">random_m</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))]</span>
+        <span class="n">m2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="p">(</span><span class="n">powmod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">vi</span><span class="p">),</span> <span class="n">m2</span><span class="p">)</span> <span class="o">*</span> <span class="n">powmod</span><span class="p">(</span><span class="n">ri</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span> <span class="n">m2</span><span class="p">))</span> <span class="o">%</span> <span class="n">m2</span>
+            <span class="k">for</span> <span class="n">vi</span><span class="p">,</span> <span class="n">ri</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+        <span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;PublicKey(m=</span><span class="si">{0}</span><span class="s2">, g=</span><span class="si">{1}</span><span class="s2">, glambda=</span><span class="si">{2}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="nb">hex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">)[:</span><span class="mi">8</span><span class="p">],</span> <span class="nb">hex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">)[:</span><span class="mi">8</span><span class="p">],</span> <span class="nb">hex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">glambda</span><span class="p">)[:</span><span class="mi">8</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="PrivateKey"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.key.PrivateKey">[docs]</a><span class="k">class</span> <span class="nc">PrivateKey</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Aggregator&#39;s private key of the DLPA service.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pk</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pk</span> <span class="o">=</span> <span class="n">pk</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Lambda</span> <span class="o">=</span> <span class="n">Lambda</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">m2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span>
+
+<div class="viewcode-block" id="PrivateKey.decrypt"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.key.PrivateKey.decrypt">[docs]</a>    <span class="k">def</span> <span class="nf">decrypt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Decrypt a given ciphertext v with given key pair.</span>
+
+<span class="sd">        The plain text is defined:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            Dec(v) = \\frac{L(v^{\\lambda})}{L(g^{\\lambda})} \\mod m</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">          v: scalar or vector of ciphertext.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">          vector of plain texts; even if the input is a scalar, one dimension</span>
+<span class="sd">          vector is returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span><span class="p">]</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">powmod</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">vi</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lambda</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">m</span>
+            <span class="k">for</span> <span class="n">vi</span> <span class="ow">in</span> <span class="n">v</span>
+        <span class="p">]</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">glambda</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">m</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">Xi</span> <span class="o">*</span> <span class="n">invert</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">m</span><span class="p">))</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">m</span> <span class="k">for</span> <span class="n">Xi</span> <span class="ow">in</span> <span class="n">X</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="PrivateKey.generate_user_keys"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.key.PrivateKey.generate_user_keys">[docs]</a>    <span class="k">def</span> <span class="nf">generate_user_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate the given number of user&#39;s key.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Lambda_u</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">random_m</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">m</span> <span class="o">//</span> <span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">Lambda_u</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">random_m</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">m</span> <span class="o">//</span> <span class="n">n</span><span class="p">))</span>
+            <span class="n">b</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">random_m</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">m</span> <span class="o">//</span> <span class="n">n</span><span class="p">))</span>
+        <span class="c1"># Sum of Lambda_u must be equal to Lambda.</span>
+        <span class="n">Lambda_u</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Lambda</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">Lambda_u</span><span class="p">))</span>
+        <span class="c1"># Sum of a must be remembered.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span>
+        <span class="c1"># Sum of b must be equal to 0, i.e. m*2</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m2</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">ClientKey</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span> <span class="n">Lambda_u</span><span class="p">,</span> <span class="n">au</span><span class="p">,</span> <span class="n">bu</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">Lambda_u</span><span class="p">,</span> <span class="n">au</span><span class="p">,</span> <span class="n">bu</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Lambda_u</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="p">]</span></div>
+
+<div class="viewcode-block" id="PrivateKey.aggregate_sum"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.key.PrivateKey.aggregate_sum">[docs]</a>    <span class="k">def</span> <span class="nf">aggregate_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ciphertexts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Aggregate a set of ciphertexts for the encrypt-sum algorithm.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">mul</span><span class="p">,</span> <span class="n">ciphertexts</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span></div>
+
+<div class="viewcode-block" id="PrivateKey.decrypt_sum"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.key.PrivateKey.decrypt_sum">[docs]</a>    <span class="k">def</span> <span class="nf">decrypt_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shares</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Decrypt a set of decryption shares made in the encrypt-sum algorithm.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">mul</span><span class="p">,</span> <span class="n">shares</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">m</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">glambda</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">m</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">invert</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">m</span><span class="p">))</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">m</span></div>
+
+<div class="viewcode-block" id="PrivateKey.aggregate_sum_squared"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.key.PrivateKey.aggregate_sum_squared">[docs]</a>    <span class="k">def</span> <span class="nf">aggregate_sum_squared</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ciphertexts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;First aggregation of a set of decryption shares for Encrypt-Sum-Squared.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">mul</span><span class="p">,</span> <span class="n">ciphertexts</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span></div>
+
+<div class="viewcode-block" id="PrivateKey.aggregate_sum_squared2"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.key.PrivateKey.aggregate_sum_squared2">[docs]</a>    <span class="k">def</span> <span class="nf">aggregate_sum_squared2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shares</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Second aggregation of a set of decryption shares for Encrypt-Sum-Squared.</span>
+
+<span class="sd">        The result :math:`c` is</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            c = Enc( (\\sum y_{n})^{2} + \\sum r_{n})</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">mul</span><span class="p">,</span> <span class="n">shares</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span></div>
+
+<div class="viewcode-block" id="PrivateKey.aggregate_noisy_sum"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.key.PrivateKey.aggregate_noisy_sum">[docs]</a>    <span class="k">def</span> <span class="nf">aggregate_noisy_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Aggregate ciphertexts (c1, c2, c3, c4).</span>
+
+<span class="sd">        C must be a list of vectors (c1, c2, c3, c4).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aggregate_sum_squared</span><span class="p">([</span><span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">C</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="PrivateKey.aggregate_noisy_sum2"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.key.PrivateKey.aggregate_noisy_sum2">[docs]</a>    <span class="k">def</span> <span class="nf">aggregate_noisy_sum2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Second aggregate ciphertexts (c1, c2, c3, c4, c5).</span>
+
+<span class="sd">        C must be a list of vectors (c1, c2, c3, c4, c5).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aggregate_sum_squared2</span><span class="p">([</span><span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">C</span><span class="p">]))</span>
+        <span class="n">c5</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aggregate_sum</span><span class="p">([</span><span class="n">c</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">C</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">aggregate_noisy_sum3</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">c5</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PrivateKey.aggregate_noisy_sum3"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.key.PrivateKey.aggregate_noisy_sum3">[docs]</a>    <span class="k">def</span> <span class="nf">aggregate_noisy_sum3</span><span class="p">(</span>  <span class="c1"># pylint:disable=too-many-arguments</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">c3</span><span class="p">,</span> <span class="n">c4</span><span class="p">,</span> <span class="n">c5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Aggregate five cipertexts for Encrypt-Noisy-Sum.</span>
+
+<span class="sd">        The result :math:`c` is</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            c = \\frac{c^{1}c^{2}c^{5}}{c^{3}c^{4}}</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="p">(</span><span class="n">c1i</span> <span class="o">*</span> <span class="n">c2i</span> <span class="o">*</span> <span class="n">c5i</span> <span class="o">*</span> <span class="n">invert</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">c3i</span> <span class="o">*</span> <span class="n">c4i</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span><span class="p">))</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span>
+            <span class="k">for</span> <span class="n">c1i</span><span class="p">,</span> <span class="n">c2i</span><span class="p">,</span> <span class="n">c3i</span><span class="p">,</span> <span class="n">c4i</span><span class="p">,</span> <span class="n">c5i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">c3</span><span class="p">,</span> <span class="n">c4</span><span class="p">,</span> <span class="n">c5</span><span class="p">)</span>
+        <span class="p">])</span></div></div>
+
+
+<div class="viewcode-block" id="ClientKey"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.key.ClientKey">[docs]</a><span class="k">class</span> <span class="nc">ClientKey</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Client&#39;s private key of the DLPA service.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># TODO: ClientKey should hold the cliend ID.</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pk</span><span class="p">,</span> <span class="n">Lambda_u</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pk</span> <span class="o">=</span> <span class="n">pk</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Lambda_u</span> <span class="o">=</span> <span class="n">Lambda_u</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">b</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">m2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;ClientKey(pk=</span><span class="si">{0}</span><span class="s2">, lambda=</span><span class="si">{1}</span><span class="s2">, a=</span><span class="si">{2}</span><span class="s2">, b=</span><span class="si">{3}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Lambda_u</span><span class="p">)[:</span><span class="mi">8</span><span class="p">],</span> <span class="nb">hex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)[:</span><span class="mi">8</span><span class="p">],</span> <span class="nb">hex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)[:</span><span class="mi">8</span><span class="p">])</span>
+
+<div class="viewcode-block" id="ClientKey.encrypt_sum"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.key.ClientKey.encrypt_sum">[docs]</a>    <span class="k">def</span> <span class="nf">encrypt_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Encrypt a given value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">random_m</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))])</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">v</span> <span class="o">+</span> <span class="n">r</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">share</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Compute a decryption share.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+                <span class="n">powmod</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ci</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lambda_u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span><span class="p">)</span> <span class="o">*</span>
+                <span class="n">powmod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">glambda</span><span class="p">,</span> <span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">ri</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">ci</span><span class="p">,</span> <span class="n">ri</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+            <span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">e</span><span class="p">,</span> <span class="n">share</span></div>
+
+<div class="viewcode-block" id="ClientKey.encrypt_sum_squared"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.key.ClientKey.encrypt_sum_squared">[docs]</a>    <span class="k">def</span> <span class="nf">encrypt_sum_squared</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Encrypt a given number for Encrypt-Sum-Squared.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">y</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">share</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Compute the description share associated with this encryption.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+                <span class="n">powmod</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ci</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">yi</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">ci</span><span class="p">,</span> <span class="n">yi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="p">])</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">r</span><span class="p">))</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span>
+
+        <span class="k">return</span> <span class="n">e</span><span class="p">,</span> <span class="n">share</span></div>
+
+<div class="viewcode-block" id="ClientKey.encrypt_noisy_sum"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.key.ClientKey.encrypt_noisy_sum">[docs]</a>    <span class="k">def</span> <span class="nf">encrypt_noisy_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Encrypt a given number for Encrypt-Noisy-Sum.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">R</span><span class="p">:</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">random_m</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))])</span>
+                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m2</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span>
+             <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m2</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span>
+
+        <span class="n">enc_y</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">enc_y_t</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_gauss</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))]</span>
+            <span class="n">c</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encrypt_sum_squared</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">enc_y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+            <span class="n">enc_y_t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+        <span class="n">enc_x</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encrypt_sum</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">R</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+
+        <span class="k">def</span> <span class="nf">share</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Compute the description share associated with this encryption.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+                <span class="n">powmod</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ci</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lambda_u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span><span class="p">)</span> <span class="o">*</span> <span class="n">powmod</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">glambda</span><span class="p">,</span> <span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">ri</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">ci</span><span class="p">,</span> <span class="n">ri</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+            <span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">enc_y</span><span class="p">,</span> <span class="n">enc_y_t</span><span class="p">,</span> <span class="n">enc_x</span><span class="p">,</span> <span class="n">share</span></div>
+
+    <span class="k">def</span> <span class="nf">_gauss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a random value under the Gauss distribution in Zm*2.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">gauss</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">sigma</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span> <span class="o">-</span> <span class="n">y</span>
+        <span class="k">if</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">m2</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">y</span></div>
+
+
+<div class="viewcode-block" id="generate_keypair"><a class="viewcode-back" href="../../modules/dlpa.html#dlpa.key.generate_keypair">[docs]</a><span class="k">def</span> <span class="nf">generate_keypair</span><span class="p">(</span><span class="n">m_length</span><span class="o">=</span><span class="mi">2048</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate a key pair.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">q</span> <span class="o">=</span> <span class="n">m</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">m</span> <span class="ow">or</span> <span class="n">gcd</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">m_len</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">m_len</span> <span class="o">&lt;</span> <span class="n">m_length</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">getprimeover</span><span class="p">(</span><span class="n">m_length</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">getprimeover</span><span class="p">(</span><span class="n">m_length</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="n">q</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">p</span> <span class="o">*</span> <span class="n">q</span>
+            <span class="n">m_len</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span>
+
+    <span class="n">beta</span> <span class="o">=</span> <span class="n">random_m</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="n">Lambda</span> <span class="o">=</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">lcm</span><span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">a</span> <span class="o">=</span> <span class="n">random_m</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">random_m</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="n">m2</span> <span class="o">=</span> <span class="n">m</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="n">g</span> <span class="o">=</span> <span class="p">(</span><span class="n">powmod</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">m</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">m2</span><span class="p">)</span> <span class="o">*</span> <span class="n">powmod</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">m2</span><span class="p">))</span> <span class="o">%</span> <span class="n">m2</span>
+    <span class="n">pk</span> <span class="o">=</span> <span class="n">PublicKey</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">powmod</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">m2</span><span class="p">))</span>
+    <span class="n">sk</span> <span class="o">=</span> <span class="n">PrivateKey</span><span class="p">(</span><span class="n">pk</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sk</span><span class="p">,</span> <span class="n">pk</span></div>
+</pre></div> </div> <div class="articleComments"> </div> </div> <footer> <hr> <div role="contentinfo"> <p> &copy; Copyright 2017, Junpei Kawamoto. </p> </div> Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. <p> </p><div class="addthis_inline_follow_toolbox"></div> <p></p> <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4734862314145555" data-ad-slot="6934003829" data-ad-format="auto"></ins> <script>(adsbygoogle=window.adsbygoogle||[]).push({})</script> </footer> </div> </div> </section> </div> <script>var DOCUMENTATION_OPTIONS={URL_ROOT:"../../",VERSION:"0.3.0",COLLAPSE_INDEX:!1,FILE_SUFFIX:".html",HAS_SOURCE:!0,SOURCELINK_SUFFIX:".txt"}</script> <script src="../../_static/jquery.js"></script> <script src="../../_static/underscore.js"></script> <script src="../../_static/doctools.js"></script> <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> <script src="../../_static/js/theme.js"></script> <script>jQuery(function(){SphinxRtdTheme.StickyNav.enable()})</script> <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-57f529147128b1fb"></script> </body> </html>
