@@ -1,0 +1,14 @@
+language: python
+python:
+- 3.5.2
+script:
+- python setup.py test
+deploy:
+  provider: pypi
+  user: jkawamoto
+  password:
+    secure: AdskoVw60Fu5LeHmgZthNd+m63ivO9YteVR4hrRcjsWv48z6BrelOKS1ZNaCSYZBOL7k/rICI/K5gH3dJBzJoOukZ6SGiOGfhX8cQCkfgm7UbhTVspW4os54irCv+ZzWVM5wiwZ9AbapH8fr0N5t0Xt7i2TnH08hZAdc8kPKqa7rAewEreBUmcfSw3hLHVdiZA4ySzqMF7Mxl2E33lrlpGX4hJrsoFvdhXOIsEPdPWZr4y1Swgtp9ch5YAPbQRoUDqvKKTp/HyGdDRAbRQQIqvMCZbm2EcnhXEJkpQgqc7+XbrLOp4E7ri+RoPeL4bzJRI42/TeZpdrUiM1VZ799VIBfTXu4AQFM+NudLnTa5T1J/rWD9SdiMy0xCQr5lRHCFF+l23QnWyGmy3jjRmULiiXPFdR1z/08N8vJGbn0CazQc9HAT+xURuq7kNvn+h5bD42S7ftYMN2sT94fJ+jL9AaPouUpWRlT8vPULEmR3YnuzP+rPTOt8CT1lM0yKqCJ303Lw2rzWsYq9CAWhOAgInmN2HAsT76TL8hatIS3QbEnDfKn22nl+Nl1a42M+nQrPZ0+T0Cyoe56U2gdhnzwAnblq7KyZNBZAVnyS2crAA6kSUqIb0cD3uUEz2HCuCHnM+jy+XjOXBQE/kUmDtpGcfPBOcVeBNIMw7WNCcV5E44=
+  on:
+    tags: true
+    distributions: sdist bdist_wheel
+    repo: jkawamoto/psi-dlpa

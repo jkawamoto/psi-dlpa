@@ -1,0 +1,136 @@
+//
+// dlpa.proto
+//
+// Copyright (c) 2017 Junpei Kawamoto
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+syntax = "proto3";
+package dlpa;
+
+
+// PublicKey defines essential information of a public key.
+message PublicKey{
+  string m = 1;
+  string g = 2;
+  string glambda = 3;
+}
+
+// ClientKey defines essential information of a client key.
+message ClientKey{
+  string lambda_u = 1;
+  string a = 2;
+  string b = 3;
+  PublicKey public_key = 4;
+}
+
+// GetKey takes client ID.
+message GetKeyRequest{
+  int32 id = 1;
+}
+
+// Ciphertext defines a string encoded ciphertext.
+message Ciphertext{
+  // ID of the client which cipertext issued.
+  // If a server issued this message, 0 is set.
+  int32 id = 1;
+  // Time is a UNIX time when this ciphertext issued.
+  int32 time = 2;
+  // Value is the actual value of the ciphertext.
+  repeated string value = 3;
+  // Target specifies what vale this ciphertext represents.
+  string target = 4;
+}
+
+// DecryptionShare defines a string encoded decryption share.
+message DecryptionShare{
+  // ID of the client this decryption share issues.
+  int32 id = 1;
+  // Slot is a time slot this decryption share is associated with.
+  int32 slot = 2;
+  // Share is the string encoded decryption share.
+  repeated string share = 3;
+  // Target specifies what vale this decryption share represents.
+  string target = 4;
+}
+
+// CiphertextVector defines five ciphertexts for Encrypt-Noisy-Sum.
+message CiphertextVector{
+  // c1 is a string encoded ciphertest c1.
+  repeated string c1 = 1;
+  // c2 is a string encoded ciphertest c1.
+  repeated string c2 = 2;
+  // c3 is a string encoded ciphertest c1.
+  repeated string c3 = 3;
+  // c4 is a string encoded ciphertest c1.
+  repeated string c4 = 4;
+  // c5 is a string encoded ciphertest c1.
+  repeated string c5 = 5;
+}
+
+// EncryptNoisySumRequest defines a request of Encrypt-Noisy-Sum protocol.
+message EncryptNoisySumCiphertexts{
+  // ID of the client which cipertext issued.
+  // If a server issued this message, 0 is set.
+  int32 id = 1;
+  // Time is a UNIX time when this ciphertext issued.
+  int32 time = 2;
+  // Value is the actual value of the ciphertext.
+  CiphertextVector value = 3;
+  // Target specifies what vale this ciphertext represents.
+  string target = 4;
+}
+
+// NoResponse defines a response without any values.
+message NoResponse{}
+
+
+// DLPA defines the interface of distributed Laplace Perturbation
+// Algorithm (DLPA) service.
+service DLPA{
+  // GetKey is used in the setup phase to obtain keys.
+  rpc GetKey(GetKeyRequest) returns (ClientKey){}
+
+  // PutEncryptSum is used in the first step of Encrypt-Sum protocol, to
+  // upload a ciphertext. It returns an aggregated ciphertext to create a
+  // decryption share.
+  rpc PutEncryptSum(Ciphertext) returns (Ciphertext){}
+
+  // PutEncryptSumShare is used in the second step of Encrypt-Sum protocol, to
+  // upload a decryption share.
+  rpc PutEncryptSumShare(DecryptionShare) returns (NoResponse){}
+
+  // PutEncryptSumSquared is used in the first step of Encrypt-Sum-Squared
+  // protocol, to upload a Ciphertext. It returns an aggregated ciphertext to
+  // create a decryption share.
+  rpc PutEncryptSumSquared(Ciphertext) returns (Ciphertext){}
+
+  // PutEncryptSumSquaredShare is used in the second step of Encrypt-Sum-Squared
+  // protocol, to upload a decryption share.
+  rpc PutEncryptSumSquaredShare(DecryptionShare) returns (NoResponse){}
+
+  // PutEncryptNoisySum is used in the first step of Encrypt-Noisy-Sum protocol,
+  // to upload a ciphertext. It returns an aggregated ciphertext to create a
+  // decryption share.
+  rpc PutEncryptNoisySum(EncryptNoisySumCiphertexts) returns (EncryptNoisySumCiphertexts){}
+
+  // PutEncryptNoisySumShare is used in the second step of Encrypt-Noisy-Sum
+  // protocol, to upload a set of decryption shares.
+  rpc PutEncryptNoisySumShare(EncryptNoisySumCiphertexts) returns (Ciphertext){}
+
+  // PutEncryptNoisySumShare is used in the second step of Encrypt-Noisy-Sum
+  // protocol, to upload a last decryption share.
+  rpc PutEncryptNoisySumLastShare(DecryptionShare) returns (NoResponse){}
+
+}

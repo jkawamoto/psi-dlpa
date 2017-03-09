@@ -1,0 +1,17 @@
+{% extends "!footer.html" %}
+
+{%- block extrafooter %}
+<p>
+  <div class="addthis_inline_follow_toolbox"></div>
+</p>
+{% if google_adsense is defined %}
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="{{ google_adsense }}"
+     data-ad-slot="{{ google_adsense_slot }}"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+{% endif %}
+{% endblock %}
