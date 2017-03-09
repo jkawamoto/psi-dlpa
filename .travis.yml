@@ -1,6 +1,18 @@
 language: python
 python:
 - 3.5.2
+addons:
+  apt:
+    packages:
+      - libmpc-dev
+      - libgmp3-dev
+      - libmpfr-dev
+before_install:
+  - curl ftp://ftp.gnu.org/gnu/mpc/mpc-1.0.3.tar.gz -o mpc-1.0.3.tar.gz
+  - tar -zxvf mpc-1.0.3.tar.gz
+  - cd mpc-1.0.3 && sh configure && make && make install
+install:
+  - pip install --install-option="--shared=/usr/local/lib" gmpy2
 script:
 - python setup.py test
 deploy:
