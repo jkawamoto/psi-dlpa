@@ -16,7 +16,7 @@ Algorithm (DLPA).
 
 The DLPA has been introduced by `Vibhor
 Rastogi <https://www.linkedin.com/in/vibhor-rastogi-6b680152>`__ and
-`Suman Nath <https://www.microsoft.com/en-us/research/people/>`__ in
+`Suman Nath <https://www.microsoft.com/en-us/research/people/sumann/>`__ in
 "`Differentially Private Aggregation of Distributed Time-Series with
 Transformation and
 Encryption <http://dl.acm.org/citation.cfm?id=1807247>`__," published in
