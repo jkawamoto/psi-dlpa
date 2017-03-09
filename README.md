@@ -1,5 +1,7 @@
 # Distributed Laplace Perturbation Algorithm
 [![GPLv3](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://www.gnu.org/copyleft/gpl.html)
+[![Build Status](https://travis-ci.org/jkawamoto/psi-dlpa.svg?branch=master)](https://travis-ci.org/jkawamoto/psi-dlpa)
+[![wercker status](https://app.wercker.com/status/e2799a5e4bf381734ac6d2d5dc844f3e/s/master "wercker status")](https://app.wercker.com/project/byKey/e2799a5e4bf381734ac6d2d5dc844f3e)
 [![Release](https://img.shields.io/badge/release-0.3.0-brightgreen.svg)](https://github.com/jkawamoto/psi-dlpa/releases/tag/0.3.0)
 
 Client and server applications providing Distributed Laplace Perturbation

@@ -10,11 +10,14 @@ addons:
 before_install:
   - curl ftp://ftp.gnu.org/gnu/mpc/mpc-1.0.3.tar.gz -o mpc-1.0.3.tar.gz
   - tar -zxvf mpc-1.0.3.tar.gz
-  - cd mpc-1.0.3 && sh configure && make && make install
+  - cd mpc-1.0.3 && sh configure && make && sudo make install && cd ..
+  - pip install --upgrade pip
 install:
+  - pip install -r requirements.txt
   - pip install --install-option="--shared=/usr/local/lib" gmpy2
 script:
-- python setup.py test
+  - python -c "import gmpy2"
+  - python setup.py test
 deploy:
   provider: pypi
   user: jkawamoto
