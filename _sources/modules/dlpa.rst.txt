@@ -9,48 +9,48 @@ dlpa package
 Submodules
 ----------
 
-dlpa.client module
-------------------
+dlpa\.client module
+-------------------
 
 .. automodule:: dlpa.client
     :members:
     :undoc-members:
     :show-inheritance:
 
-dlpa.dlpa_pb2 module
---------------------
+dlpa\.dlpa\_pb2 module
+----------------------
 
 .. automodule:: dlpa.dlpa_pb2
     :members:
     :undoc-members:
     :show-inheritance:
 
-dlpa.dlpa_pb2_grpc module
--------------------------
+dlpa\.dlpa\_pb2\_grpc module
+----------------------------
 
 .. automodule:: dlpa.dlpa_pb2_grpc
     :members:
     :undoc-members:
     :show-inheritance:
 
-dlpa.key module
----------------
+dlpa\.key module
+----------------
 
 .. automodule:: dlpa.key
     :members:
     :undoc-members:
     :show-inheritance:
 
-dlpa.server module
-------------------
+dlpa\.server module
+-------------------
 
 .. automodule:: dlpa.server
     :members:
     :undoc-members:
     :show-inheritance:
 
-dlpa.util module
-----------------
+dlpa\.util module
+-----------------
 
 .. automodule:: dlpa.util
     :members:
